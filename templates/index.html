@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track Google Cloud BigQuery release notes in real time. Filter by features, issues, announcements, and easily tweet updates.">
+    <title>BigQuery Release Insights | Google Cloud News</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="glow-bg" id="glow-bg-primary"></div>
+    <div class="glow-bg glow-bg-secondary" id="glow-bg-secondary"></div>
+
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2005/svg">
+                        <path d="M19 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.89 20.1 3 19 3ZM10 17H8V13H10V17ZM13 17H11V7H13V17ZM16 17H14V10H16V17Z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1 id="main-title">BigQuery Release Insights</h1>
+                    <p class="subtitle">Real-time updates, feature highlights, and release notes for Google Cloud BigQuery</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="btn-refresh" class="btn btn-primary" title="Refresh Release Notes">
+                    <span class="btn-icon">
+                        <svg id="spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2005/svg">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4.01 7.58 4.01 12C4.01 16.42 7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span class="btn-text">Refresh Feed</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Overview Panel -->
+        <section class="stats-grid" id="stats-panel">
+            <div class="stat-card" id="stat-total">
+                <div class="stat-info">
+                    <span class="stat-label">Total Releases</span>
+                    <span class="stat-value" id="val-total-releases">-</span>
+                </div>
+                <div class="stat-icon icon-total">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2005/svg">
+                        <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 12H7V10H17V12ZM17 16H7V14H17V16ZM14 8H7V6H14V8Z" fill="currentColor"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-card" id="stat-features">
+                <div class="stat-info">
+                    <span class="stat-label">Features</span>
+                    <span class="stat-value" id="val-features">-</span>
+                </div>
+                <div class="stat-icon icon-feature">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2005/svg">
+                        <path d="M12 2L1 21H23L12 2ZM12 6L19.8 19H4.2L12 6ZM12 10V14H13V10H12ZM12 16V17H13V16H12Z" fill="currentColor" style="display:none;"/>
+                        <!-- Star / Sparkles for feature -->
+                        <path d="M11.5 6L13 9.5L16.5 11L13 12.5L11.5 16L10 12.5L6.5 11L10 9.5L11.5 6ZM19.5 14L20.2 15.8L22 16.5L20.2 17.2L19.5 19L18.8 17.2L17 16.5L18.8 15.8L19.5 14Z" fill="currentColor"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-card" id="stat-issues">
+                <div class="stat-info">
+                    <span class="stat-label">Issues & Breaking</span>
+                    <span class="stat-value" id="val-issues">-</span>
+                </div>
+                <div class="stat-icon icon-issue">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2005/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-card" id="stat-changes">
+                <div class="stat-info">
+                    <span class="stat-label">Announcements & Changes</span>
+                    <span class="stat-value" id="val-changes">-</span>
+                </div>
+                <div class="stat-icon icon-change">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2005/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters & Search Bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <span class="search-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2005/svg">
+                        <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" fill="currentColor"/>
+                    </svg>
+                </span>
+                <input type="text" id="input-search" placeholder="Search release notes (e.g. Gemini, Arrow, tables)..." aria-label="Search release notes">
+            </div>
+            <div class="filter-buttons" role="group" aria-label="Filter updates by type">
+                <button class="filter-btn active" data-filter="all" id="filter-all">All</button>
+                <button class="filter-btn" data-filter="Feature" id="filter-features">Features</button>
+                <button class="filter-btn" data-filter="Issue" id="filter-issues">Issues & Breaking</button>
+                <button class="filter-btn" data-filter="Change" id="filter-changes">Changes & Announcements</button>
+            </div>
+        </div>
+
+        <!-- Main Content Layout -->
+        <main class="main-layout">
+            <!-- Left Side: Releases Timeline -->
+            <section class="timeline-container" aria-label="Release Notes Timeline">
+                <div class="loading-state" id="loading-indicator">
+                    <div class="double-bounce-spinner">
+                        <div class="double-bounce1"></div>
+                        <div class="double-bounce2"></div>
+                    </div>
+                    <p>Fetching the latest BigQuery release notes...</p>
+                </div>
+                
+                <div class="error-state hidden" id="error-display">
+                    <div class="error-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2005/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3>Failed to Load Release Notes</h3>
+                    <p id="error-message">Could not fetch updates from the Google Cloud feed. Please check your network connection and try again.</p>
+                    <button class="btn btn-secondary" id="btn-retry">Retry Fetch</button>
+                </div>
+
+                <div class="timeline hidden" id="releases-timeline">
+                    <!-- Release items dynamically generated here -->
+                </div>
+
+                <div class="no-results hidden" id="no-results-indicator">
+                    <h3>No matching release notes found</h3>
+                    <p>Try refining your search keyword or switching filters.</p>
+                </div>
+            </section>
+
+            <!-- Right Side: Sticky Composer & Details -->
+            <aside class="composer-container">
+                <div class="composer-card" id="tweet-composer-widget">
+                    <div class="composer-header">
+                        <h3>Share Update</h3>
+                        <span class="composer-badge" id="composer-status">No Update Selected</span>
+                    </div>
+                    
+                    <div class="composer-body">
+                        <p class="composer-instruction" id="composer-tip">
+                            Click or select any release note on the left timeline to draft a tweet about it.
+                        </p>
+                        
+                        <div class="composer-textarea-wrapper hidden" id="composer-inputs-wrapper">
+                            <label for="tweet-text" class="sr-only">Tweet Content</label>
+                            <textarea id="tweet-text" rows="6" maxlength="280" placeholder="What would you like to tweet?"></textarea>
+                            <div class="textarea-footer">
+                                <span class="char-counter"><span id="char-count">0</span> / 280</span>
+                                <span class="composer-warning hidden" id="composer-char-warning">Approaching character limit!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="composer-footer">
+                        <button id="btn-tweet" class="btn btn-accent full-width" disabled>
+                            <span class="btn-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2005/svg">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                </svg>
+                            </span>
+                            <span class="btn-text">Tweet on X</span>
+                        </button>
+                        <button id="btn-copy" class="btn btn-secondary full-width hidden">
+                            <span class="btn-text">Copy to Clipboard</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="app-footer">
+            <p>BigQuery Release Insights dashboard &bull; Powered by Google Cloud RSS Feed &bull; 2026</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
