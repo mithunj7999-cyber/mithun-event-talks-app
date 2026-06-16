@@ -40,6 +40,35 @@
     
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --bg-input: rgba(0, 0, 0, 0.25);
+    --bg-nested: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] {
+    --bg-dark: #f8fafc;
+    --bg-surface: rgba(255, 255, 255, 0.75);
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --border-color: rgba(15, 23, 42, 0.08);
+    --border-hover: rgba(15, 23, 42, 0.16);
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    
+    --color-primary: #4f46e5;
+    --color-primary-glow: rgba(79, 70, 229, 0.15);
+    --color-accent: #0284c7;
+    --color-accent-glow: rgba(2, 132, 199, 0.2);
+    
+    --color-feature-bg: rgba(16, 185, 129, 0.12);
+    --color-issue-bg: rgba(239, 68, 68, 0.12);
+    --color-breaking-bg: rgba(245, 158, 11, 0.12);
+    --color-change-bg: rgba(59, 130, 246, 0.12);
+    --color-announcement-bg: rgba(139, 92, 246, 0.12);
+
+    --bg-input: rgba(15, 23, 42, 0.05);
+    --bg-nested: rgba(15, 23, 42, 0.04);
 }
 
 /* Reset and Global Styles */
@@ -258,7 +287,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 0.85rem 1rem 0.85rem 2.75rem;
-    color: white;
+    color: var(--text-primary);
     font-size: 0.95rem;
     font-family: var(--font-body);
     transition: var(--transition-fast);
@@ -431,7 +460,7 @@ body {
     font-family: var(--font-heading);
     font-size: 1.35rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
 }
 
 .date-link {
@@ -587,7 +616,7 @@ body {
     background: var(--bg-card);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 1.5rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -598,7 +627,7 @@ body {
 }
 
 .composer-card:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--border-hover);
 }
 
 .composer-header {
@@ -626,7 +655,7 @@ body {
     color: var(--text-secondary);
     text-align: center;
     padding: 2rem 1rem;
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--bg-nested);
     border-radius: 12px;
     border: 1px dashed var(--border-color);
 }
@@ -644,11 +673,11 @@ body {
 }
 
 .composer-textarea-wrapper textarea {
-    background: rgba(0, 0, 0, 0.25);
+    background: var(--bg-input);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
-    color: white;
+    color: var(--text-primary);
     font-family: var(--font-body);
     font-size: 0.95rem;
     resize: none;

@@ -8,6 +8,7 @@ let appData = {
 
 // DOM Elements
 const DOM = {
+    btnThemeToggle: document.getElementById('btn-theme-toggle'),
     btnExport: document.getElementById('btn-export'),
     btnRefresh: document.getElementById('btn-refresh'),
     spinner: document.getElementById('spinner'),
@@ -43,6 +44,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Setup Event Listeners
 function setupEventListeners() {
+    // Theme Toggle Button
+    if (DOM.btnThemeToggle) {
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+
+        DOM.btnThemeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+    } else {
+        // Fallback initialization if button is missing
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+
     // Export CSV Button
     if (DOM.btnExport) {
         DOM.btnExport.addEventListener('click', () => {
@@ -464,4 +482,21 @@ function exportToCSV() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+}
+
+// Set theme (light or dark) and update toggle switch icon
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    
+    const toggleIcon = document.getElementById('theme-toggle-icon');
+    if (toggleIcon) {
+        if (theme === 'light') {
+            // Moon icon (click to switch to dark)
+            toggleIcon.outerHTML = `<svg id="theme-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2005/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+        } else {
+            // Sun icon (click to switch to light)
+            toggleIcon.outerHTML = `<svg id="theme-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2005/svg"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+        }
+    }
 }
