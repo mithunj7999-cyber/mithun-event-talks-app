@@ -8,6 +8,7 @@ let appData = {
 
 // DOM Elements
 const DOM = {
+    btnExport: document.getElementById('btn-export'),
     btnRefresh: document.getElementById('btn-refresh'),
     spinner: document.getElementById('spinner'),
     valTotalReleases: document.getElementById('val-total-releases'),
@@ -42,6 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Setup Event Listeners
 function setupEventListeners() {
+    // Export CSV Button
+    if (DOM.btnExport) {
+        DOM.btnExport.addEventListener('click', () => {
+            exportToCSV();
+        });
+    }
+
     // Refresh Button
     DOM.btnRefresh.addEventListener('click', () => {
         fetchReleases(true);
@@ -263,6 +271,17 @@ function filterAndRenderTimeline() {
                 const actions = document.createElement('div');
                 actions.className = 'card-actions';
                 
+                // Copy Button inside card
+                const copyCardBtn = document.createElement('button');
+                copyCardBtn.className = 'icon-btn copy-card-btn';
+                copyCardBtn.title = 'Copy update description';
+                copyCardBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy" xmlns="http://www.w3.org/2005/svg">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                `;
+                
                 // Share Button inside card
                 const shareBtn = document.createElement('button');
                 shareBtn.className = 'icon-btn share-btn';
@@ -273,6 +292,7 @@ function filterAndRenderTimeline() {
                     </svg>
                 `;
                 
+                actions.appendChild(copyCardBtn);
                 actions.appendChild(shareBtn);
                 cardHeader.appendChild(badge);
                 cardHeader.appendChild(actions);
@@ -297,6 +317,24 @@ function filterAndRenderTimeline() {
                     e.stopPropagation();
                     selectUpdate(update, release);
                     DOM.tweetText.focus();
+                });
+
+                // Copy card content
+                copyCardBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(update.body_text).then(() => {
+                        const originalSVG = copyCardBtn.innerHTML;
+                        copyCardBtn.innerHTML = `
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-feature)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check" xmlns="http://www.w3.org/2005/svg">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        `;
+                        setTimeout(() => {
+                            copyCardBtn.innerHTML = originalSVG;
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
                 });
 
                 updatesList.appendChild(card);
@@ -393,4 +431,37 @@ function getBadgeClass(type) {
     if (t.includes('change')) return 'change';
     if (t.includes('announcement')) return 'announcement';
     return 'default';
+}
+
+// Export parsed releases to a CSV file download
+function exportToCSV() {
+    if (!appData.releases || appData.releases.length === 0) return;
+    
+    const headers = ['Date', 'Type', 'Description', 'Link'];
+    const csvRows = [headers.join(',')];
+    
+    appData.releases.forEach(release => {
+        release.updates.forEach(update => {
+            // Escape quotes for CSV compliance
+            const escapedDate = `"${release.title.replace(/"/g, '""')}"`;
+            const escapedType = `"${update.type.replace(/"/g, '""')}"`;
+            const escapedBody = `"${update.body_text.replace(/"/g, '""')}"`;
+            const escapedLink = `"${release.link.replace(/"/g, '""')}"`;
+            
+            csvRows.push([escapedDate, escapedType, escapedBody, escapedLink].join(','));
+        });
+    });
+    
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "bigquery_release_notes.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
